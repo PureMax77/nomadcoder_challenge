@@ -10,8 +10,7 @@ import { handleForm } from "./actions";
 export default function Home() {
   const [state, action] = useFormState(handleForm, null);
 
-  const isSuccess = state?.code === "success";
-  const isFail = state?.code === "fail";
+  const isSuccess = state === undefined;
 
   return (
     <form
@@ -20,19 +19,28 @@ export default function Home() {
     >
       <FireIcon className="size-16 mb-10" stroke="tomato" fill="tomato" />
       <div className="flex flex-col gap-4 w-full">
-        <FormInput required name="email" type="email" placeholder="Email" />
+        <FormInput
+          required
+          name="email"
+          type="email"
+          placeholder="Email"
+          errors={state?.fieldErrors.email}
+        />
         <FormInput
           required
           name="username"
           type="text"
           placeholder="Username"
+          // minLength={5}
+          errors={state?.fieldErrors.username}
         />
         <FormInput
           required
           name="password"
           type="password"
           placeholder="Password"
-          error={isFail ? "Wrong Password" : ""}
+          // minLength={10}
+          errors={state?.fieldErrors.password}
         />
       </div>
       <LoginButton />
