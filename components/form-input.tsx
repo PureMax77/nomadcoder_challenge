@@ -2,7 +2,7 @@ import { EnvelopeIcon, UserIcon, KeyIcon } from "@heroicons/react/24/outline";
 import { InputHTMLAttributes } from "react";
 
 interface FormInputProps {
-  name: "email" | "username" | "password";
+  name: "email" | "username" | "password" | "confirmPassword";
   errors?: string[];
 }
 
@@ -25,7 +25,7 @@ export default function FormInput({
       {name === "username" && (
         <UserIcon className="absolute size-6 top-2.5 left-4" />
       )}
-      {name === "password" && (
+      {(name === "password" || name === "confirmPassword") && (
         <KeyIcon className="absolute size-6 top-2.5 left-4" />
       )}
       {errors.map((error, index) => (
