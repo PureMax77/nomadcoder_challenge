@@ -7,7 +7,7 @@ interface Routes {
 
 // 세션없을 때 접근 가능한 페이지
 const noSessionPages: Routes = {
-  "/": true,
+  "/landing": true,
   "/log-in": true,
   "/create-account": true,
 };
@@ -15,14 +15,14 @@ const noSessionPages: Routes = {
 export async function middleware(request: NextRequest) {
   const session = await getSession();
   const noNeedLogin = noSessionPages[request.nextUrl.pathname];
-  console.log(11, request.url);
+
   if (session.id) {
     if (noNeedLogin) {
       return NextResponse.redirect(new URL("/profile", request.url));
     }
   } else {
     if (!noNeedLogin) {
-      return NextResponse.redirect(new URL("/", request.url));
+      return NextResponse.redirect(new URL("/landing", request.url));
     }
   }
 }
