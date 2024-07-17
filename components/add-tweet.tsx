@@ -1,18 +1,17 @@
 "use client";
 
-import { UserType } from "@/app/page";
 import Image from "next/image";
 import { UserIcon } from "@heroicons/react/24/solid";
 import Button from "./button";
 import { useFormState } from "react-dom";
 import { createTweet } from "@/app/actions";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { UserType } from "@/app/profile/actions";
 
 let isFirst = true;
 
 export default function AddTweet({ user }: { user: UserType }) {
   const [state, action] = useFormState(createTweet, null);
-  const [description, setDescription] = useState<string | null>(null);
 
   useEffect(() => {
     if (isFirst) {
@@ -23,7 +22,6 @@ export default function AddTweet({ user }: { user: UserType }) {
     // action 성공시 초기화
     // 성공시 state가 undefined됨
     if (state !== null) {
-      // setDescription("");
       window.location.reload();
     }
   }, [state]);
@@ -51,9 +49,8 @@ export default function AddTweet({ user }: { user: UserType }) {
         <div className="flex-1 flex flex-col">
           <textarea
             required
-            value={description || ""}
-            onChange={(e) => setDescription(e.target.value)}
-            className="mb-[-10px] outline-none resize-none"
+            placeholder="What is happening?!"
+            className="mb-[-10px] outline-none resize-none placeholder:text-lg"
             name="description"
             rows={3}
           ></textarea>
