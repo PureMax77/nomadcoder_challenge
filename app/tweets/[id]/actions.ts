@@ -4,6 +4,7 @@ import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { Prisma } from "@prisma/client";
 import { revalidatePath, unstable_cache } from "next/cache";
+import { z } from "zod";
 
 export async function getTweet(id: number) {
   try {
@@ -29,7 +30,16 @@ export async function getTweet(id: number) {
 
 export const getCachedTweet = unstable_cache(getTweet, ["tweet-detail"]);
 
+const replySchema = z.object({
+  description: z.string().min(1, "내용을 입력하세요."),
+});
+
 export const createReply = async (tweetId: number, description: string) => {
+  const result = replySchema.safeParse({ description });
+  if (!result.success) {
+    return result.error.flatten();
+  }
+
   const session = await getSession();
 
   const reply = await db.reply.create({
