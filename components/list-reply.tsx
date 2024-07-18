@@ -3,7 +3,7 @@ import { UserIcon } from "@heroicons/react/24/solid";
 import { ReplyType } from "@/app/tweets/[id]/actions";
 
 interface ListTweetProps {
-  reply: ReplyType;
+  reply: any;
 }
 
 export default function ListReply({ reply }: ListTweetProps) {

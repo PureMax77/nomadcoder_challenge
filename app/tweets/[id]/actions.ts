@@ -20,6 +20,12 @@ export async function getTweet(id: number) {
             avatar: true,
           },
         },
+        _count: {
+          select: {
+            replies: true,
+            likes: true,
+          },
+        },
       },
     });
     return tweet;
@@ -27,6 +33,8 @@ export async function getTweet(id: number) {
     return null;
   }
 }
+
+export type TweetType = Prisma.PromiseReturnType<typeof getTweet>;
 
 export const getCachedTweet = unstable_cache(getTweet, ["tweet-detail"]);
 
@@ -83,3 +91,41 @@ export const getReplies = async (tweetId: number) => {
 };
 
 export const getCachedReplies = unstable_cache(getReplies, ["tweet-replies"]);
+
+export const getIsLiked = async (tweetId: number, userId: number) => {
+  const like = await db.like.findUnique({
+    where: {
+      id: {
+        tweetId,
+        userId,
+      },
+    },
+  });
+  return !!like;
+};
+
+export const createLike = async (tweetId: number, userId: number) => {
+  try {
+    await db.like.create({
+      data: {
+        tweetId,
+        userId,
+      },
+    });
+    revalidatePath(`/tweets/${tweetId}`);
+  } catch (e) {}
+};
+
+export const deleteLike = async (tweetId: number, userId: number) => {
+  try {
+    await db.like.delete({
+      where: {
+        id: {
+          tweetId,
+          userId,
+        },
+      },
+    });
+    revalidatePath(`/tweets/${tweetId}`);
+  } catch (e) {}
+};

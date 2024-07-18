@@ -6,7 +6,7 @@ import {
 import { UserIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getCachedReplies, getCachedTweet, getTweet } from "./actions";
+import { getCachedReplies, getCachedTweet, getIsLiked } from "./actions";
 import TweetReply from "@/components/tweet-reply";
 
 export default async function TweetDetail({
@@ -24,13 +24,14 @@ export default async function TweetDetail({
     return notFound();
   }
 
-  const { user, description } = tweet;
+  const { user, description, _count } = tweet;
   const me = await getUser();
   const replies = await getCachedReplies(id);
+  const isLiked = await getIsLiked(id, me.id);
 
   return (
     <div>
-      <div className="mt-10 p-7 flex flex-col gap-5 border-[1px] border-neutral-300">
+      <div className="mt-10 p-7 flex flex-col gap-5 border-[1px] border-neutral-300 border-b-0">
         <div className="flex gap-3 items-center">
           <div className="size-10 overflow-hidden rounded-full flex">
             {user.avatar ? (
@@ -52,13 +53,8 @@ export default async function TweetDetail({
         <div>
           <p>{description}</p>
         </div>
-        <div className="border-b-[1px] border-neutral-300 w-full" />
-        <div className="flex items-center gap-4 text-neutral-400">
-          <ChatBubbleBottomCenterIcon className="size-6" />
-          <HeartIcon className="size-6" />
-        </div>
       </div>
-      <TweetReply me={me} tweetId={id} replies={replies} />
+      <TweetReply me={me} tweet={tweet!} replies={replies} isLiked={isLiked} />
     </div>
   );
 }
